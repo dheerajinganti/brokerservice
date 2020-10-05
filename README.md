@@ -1,15 +1,15 @@
 ## manage go module dependency
 
-go mod init github.com/dheerajinganti/brokerservice
-go get "github.com/gorilla/mux"
+        go mod init github.com/dheerajinganti/brokerservice
+        go get "github.com/gorilla/mux"
 
 ## push go app to cloud foundry
 manifest.yaml
 ---
-applications:
-- name: brokerservice
-env:
-    GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
+        applications:
+        - name: brokerservice
+        env:
+            GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
 
 ## create cf service broker 
 cf create-service-broker test-broker test test123 https://brokerservice.130.147.139.72.nip.io
@@ -183,17 +183,3 @@ func (c *Controller) Catalog(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	WriteResponse(w, http.StatusOK, svc)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
