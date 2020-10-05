@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pg10-{{ .Instance_id }}
+spec:
+  serviceName: postgres-10-{{ .Instance_id }}
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pg-{{ .Instance_id }}
+  template:
+    metadata:
+      labels:
+        app: pg-{{ .Instance_id }}
+    spec:
+      containers:
+      - name: pg-{{ .Instance_id }}
+        image: {{ .Image_name_and_tag }}
+        resources:
+          requests:
+            memory: "{{ .Memory_request }}"
+            cpu: "{{ .Cpu_request }}"
+          limits:
+            memory: "{{ .Memory_limit }}"
+            cpu: "{{ .Cpu_limit }}"
+        envFrom:
+          - configMapRef:
+              name: pg-config-{{ .Instance_id }}
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: pg_password
+              name: postgres-{{ .Instance_id}}
+        ports:
+        - containerPort: 5432
+          name: postgredb10
+        volumeMounts:
+        - name: postgredb10
+          mountPath: /var/lib/postgresql/data
+          subPath: postgres
+        - name: postgres-init
+          mountPath: /docker-entrypoint-initdb.d
+      volumes:
+      - name: postgres-init
+        configMap:
+          name: postgres-init-config-{{ .Instance_id}}
+  volumeClaimTemplates:
+  - metadata:
+      name: postgredb10
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: {{ .Storage_class }}
+      resources:
+        requests:
+          storage: {{ .Storage_capacity }}

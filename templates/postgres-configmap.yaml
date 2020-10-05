@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pg-config-{{ .Instance_id}}
+  labels:
+    app: pg-config-{{ .Instance_id}}
+data:
+  POSTGRES_DB: hsdp_pg
+  POSTGRES_USER: postgres

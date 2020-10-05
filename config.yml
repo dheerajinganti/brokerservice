@@ -1,0 +1,140 @@
+services:
+- name: hsdp-rds
+  id: 00fc4084-4ea1-40b2-8db7-55d040c8c683
+  description: Postgres database with plv8 for application development and testing
+  bindable: True
+  requires: []
+  tags:
+    - RDBMS
+    - Postgres-10
+    - Postgres-9.6
+    - plv8
+  metadata:
+    provider:
+      name:
+    listing:
+      imageUrl: ~
+      blurb: Postgres database with plv8 for application development and testing
+  plans:
+  - name: nano-dev
+    id: 23332639-fbc1-49e7-ab24-52b586860fef
+    description: Small plan for pg-9-6 with plv8 installed.
+    metadata:
+      displayName: pg9-6-plv8
+      bullets:
+        - Postgres 9.6 with plv8
+        - Non HA
+        - 8GB storage
+      costs: []
+  - name: nano-dev-10-2
+    id: 277fe218-c71c-4cf7-81f9-ea7c17853e93
+    description: Small plan for pg10 with plv8 installed.
+    metadata:
+      displayName: pg10-plv8
+      bullets:
+        - Postgres 10.2 with plv8
+        - Non HA
+        - 8GB storage
+      costs: []
+  - name: nano-dev-11-2
+    id: da5f9430-d6c5-4510-9e0d-5cdddcc58d76
+    description: Small plan for pg11 with plv8 installed.
+    metadata:
+      displayName: pg11-plv8
+      bullets:
+        - Postgres 11.2 with plv8
+        - Non HA
+        - 8GB storage
+      costs: []
+  - name: postgres-micro-dev
+    id: 24c33c7e-26d1-4eaf-a01c-4dd8f7d01f24
+    description: Small plan for postgres.
+    metadata:
+      displayName: postgres-micro-dev
+      bullets:
+        - Postgres 11.2 with plv8
+        - Non HA
+        - 8GB storage
+      costs: []
+  - name: postgres-medium-dev
+    id: ca9af2e6-fa92-495f-acce-32a6744e20a4
+    description: Medium plan for postgres.
+    metadata:
+      displayName: postgres-medium-dev
+      bullets:
+        - Postgres 11.2 with plv8
+        - Non HA
+        - 20GB storage
+      costs: []
+  - name: postgres-5th-gen-large
+    id: 800fa4d6-c5e6-431c-88ba-25467b96c585
+    description: large plan for postgres.
+    metadata:
+      displayName: postgres-5th-gen-large
+      bullets:
+        - Postgres 11.2 with plv8
+        - Non HA
+        - 35GB storage
+      costs: []
+  - name: postgres-5th-gen-xlarge
+    id: 7b1e1017-e9e8-44e2-87b1-223283b1756b
+    description: XLarge plan for postgres.
+    metadata:
+      displayName: postgres-5th-gen-xlarge
+      bullets:
+        - Postgres 11.2 with plv8
+        - Non HA
+        - 50GB storage
+      costs: []
+plan_settings:
+  - id: 23332639-fbc1-49e7-ab24-52b586860fef
+    storage: "8Gi"
+    memory_request: "500m"
+    memory_limit: "1Gi"
+    cpu_request: "1"
+    cpu_limit: "1"
+    image_name: clkao/postgres-plv8:9.6
+  - id: 277fe218-c71c-4cf7-81f9-ea7c17853e93
+    storage: "10Gi"
+    memory_request: "500m"
+    memory_limit: "1Gi"
+    cpu_request: "1"
+    cpu_limit: "1"
+    image_name: clkao/postgres-plv8:10-2
+  - id: da5f9430-d6c5-4510-9e0d-5cdddcc58d76
+    storage: "10Gi"
+    memory_request: "500m"
+    memory_limit: "1Gi"
+    cpu_request: "1"
+    cpu_limit: "1"
+    image_name: clkao/postgres-plv8:11-2
+  - id: 24c33c7e-26d1-4eaf-a01c-4dd8f7d01f24
+    storage: "20Gi"
+    memory_request: "500m"
+    memory_limit: "1Gi"
+    cpu_request: "1"
+    cpu_limit: "1"
+    image_name: clkao/postgres-plv8:11-2
+  - id: ca9af2e6-fa92-495f-acce-32a6744e20a4
+    storage: "25Gi"
+    memory_request: "1Gi"
+    memory_limit: "2Gi"
+    cpu_request: "1"
+    cpu_limit: "2"
+    image_name: clkao/postgres-plv8:11-2
+  - id: 800fa4d6-c5e6-431c-88ba-25467b96c585
+    storage: "35Gi"
+    memory_request: "2Gi"
+    memory_limit: "4Gi"
+    cpu_request: "2"
+    cpu_limit: "4"
+    image_name: clkao/postgres-plv8:11-2
+  - id: 7b1e1017-e9e8-44e2-87b1-223283b1756b
+    storage: "50Gi"
+    memory_request: "4Gi"
+    memory_limit: "8Gi"
+    cpu_request: "4"
+    cpu_limit: "8"
+    image_name: clkao/postgres-plv8:11-2    
+basic_auth_user: cf_broker_test
+basic_auth_pass: Eirini_cf_broker_832

@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  annotations:
+    meta.helm.sh/release-name: postgres-exporter
+    meta.helm.sh/release-namespace: prometheus
+  labels:
+    release: prom-operator
+  name: postgres-exporter-{{instance_id}}
+spec:
+  endpoints:
+  - targetPort: http
+  jobLabel: postgres-exporter-{{instance_id}}
+  namespaceSelector:
+    matchNames:
+    - hsdp-postgres
+  selector:
+    matchLabels:
+      app: prometheus-postgres-exporter
+      release: postgres-exporter
+      cf-instance-id: {{instance_id}}
+

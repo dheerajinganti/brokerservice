@@ -1,0 +1,10 @@
+
+[
+  {
+    "protocol": "tcp",
+    "destination": "10.0.0.0/8",
+    "ports": "80,443,6443,5432,9000,6379,5672,8200,15672,3306",
+    "log": true,
+    "description": "Allow communication with k8s api"
+  }
+]

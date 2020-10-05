@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: postgres-exporter
+    meta.helm.sh/release-namespace: hsdp-postgres
+  labels:
+    app: prometheus-postgres-exporter
+    release: postgres-exporter
+    cf-instance-id: {{instance_id}}
+  name: postgres-exporter-{{instance_id}}
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 9187
+  selector:
+    app: prometheus-postgres-exporter
+    release: postgres-exporter
+    cf-instance-id: {{instance_id}}
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
