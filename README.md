@@ -4,7 +4,7 @@
         go get "github.com/gorilla/mux"
 
 ## push go app to cloud foundry
-manifest.yaml
+#### manifest.yaml
 ---
         applications:
         - name: brokerservice
