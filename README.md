@@ -14,23 +14,27 @@ env:
 ## create cf service broker 
 cf create-service-broker test-broker test test123 https://brokerservice.130.147.139.72.nip.io
 
-PUT /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true
-DELETE /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true&plan_id=23332639-fbc1-49e7-ab24-52b586860fef&service_id=00fc4084-4ea1-40b2-8db7-55d040c8c683
+#### http requests:
 
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT 2020/10/03 18:26:18 received body: {
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "service_id": "00fc4084-4ea1-40b2-8db7-55d040c8c683",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "plan_id": "23332639-fbc1-49e7-ab24-52b586860fef",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "organization_guid": "ba414500-ea59-4851-bc05-1a5c40bbfde8",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "space_guid": "3e8e3238-8d2a-4646-9f6e-fc398908586a",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "context": {
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "platform": "cloudfoundry",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "organization_guid": "ba414500-ea59-4851-bc05-1a5c40bbfde8",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "space_guid": "3e8e3238-8d2a-4646-9f6e-fc398908586a",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "organization_name": "hsop",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "space_name": "dev",
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT "instance_name": "test-postgres"
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT }
-   2020-10-03T23:56:18.00+0530 [APP/PROC/WEB/0] OUT }
+    PUT /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true
+    
+    DELETE /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true&plan_id=23332639-fbc1-49e7-ab24-52b586860fef&service_id=00fc4084-4ea1-40b2-8db7-55d040c8c683
+
+#### request body payload for createinstance:
+
+        {
+          "service_id": "00fc4084-4ea1-40b2-8db7-55d040c8c683",
+          "plan_id": "23332639-fbc1-49e7-ab24-52b586860fef",
+          "organization_guid": "ba414500-ea59-4851-bc05-1a5c40bbfde8",
+          "context": {
+          	"platform": "cloudfoundry",
+              "organization_guid": "ba414500-ea59-4851-bc05-1a5c40bbfde8",
+              "space_guid": "3e8e3238-8d2a-4646-9f6e-fc398908586a",
+              "organization_name": "hsop",
+              "space_name": "dev",
+              "instance_name": "test-postgres"
+             }
+        }
 
 
 ## InitBroker function
