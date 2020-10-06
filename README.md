@@ -33,7 +33,7 @@
 
         kubectl create secret docker-registry afpullsecret -n pg-test --docker-server=https://hsop-local-docker.artifactory.pic.philips.com --docker-username=ing08763 --docker-email=admin@philips.com --docker-password=""
 
-#### helm charts for golan application
+#### helm charts for golang application
         helm create charts
 
 #### helm dry run before deployment
