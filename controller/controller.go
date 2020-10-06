@@ -156,13 +156,19 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 	}
 	//filter the plan based on the planid
 	var ps model.PlanSetting
+	var bFound bool
 	for _, p := range c.Config.PlanSettings {
 		fmt.Println(p.ID)
 		if pd.PlanID == p.ID {
+			bFound = true
 			ps = p
 			log.Println("Found plan id for creating instance")
 			break
 		}
+	}
+	if !bFound {
+		log.Println("No plans found for creating instance, return")
+		return
 	}
 
 	log.Println("printing plan details", ps.CPULimit, ps.CPURequest, ps.ImageName)

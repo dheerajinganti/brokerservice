@@ -1,5 +1,6 @@
 ---
 applications:
-- name: brokerservice
+- name: test-brokerservice
 env:
     GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
+    GOPROXY: https://mirrors.aliyun.com/goproxy/

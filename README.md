@@ -1,9 +1,12 @@
-## manage go module dependency
+### Manage go module dependency
 
         go mod init github.com/dheerajinganti/brokerservice
         go get "github.com/gorilla/mux"
 
-## push go app to cloud foundry
+        list dependencies
+        go list -m all
+        
+### push golang app to cloud foundry
 #### manifest.yaml
 ---
         applications:
@@ -11,14 +14,37 @@
         env:
             GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
 
-## create cf service broker 
-cf create-service-broker test-broker test test123 https://brokerservice.130.147.139.72.nip.io
+### create cf service broker 
+        cf create-service-broker test-broker test test123 https://brokerservice.130.147.139.72.nip.io
 
-#### http requests:
+#### enable service access
+        cf enable-service-access hsdp-rds -b test-broker
 
-    PUT /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true
+### Dockerize go application 
+
+#### docker build
+        docker build --tag hsop-local-docker.artifactory.pic.philips.com/pg-broker:0.1 .
+#### docker run 
+        docker run -d --name pg-broker --restart=always --publish 8888:8888 hsop-local-docker.artifactory.pic.philips.com/pg-broker:0.2
+#### push docker image to registry
+        docker image push hsop-local-docker.artifactory.pic.philips.com/pg-broker:0.2 
+
+#### create imagepull secret for kubernetes deployment
+
+        kubectl create secret docker-registry afpullsecret -n pg-test --docker-server=https://hsop-local-docker.artifactory.pic.philips.com --docker-username=ing08763 --docker-email=admin@philips.com --docker-password=""
+
+#### helm charts for golan application
+        helm create charts
+
+#### helm dry run before deployment
+        helm install pg-broker --dry-run --debug ./charts
+
+
+#### http requests from Cloud Foundry as per OSBI specification
+
+        PUT /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true
     
-    DELETE /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true&plan_id=23332639-fbc1-49e7-ab24-52b586860fef&service_id=00fc4084-4ea1-40b2-8db7-55d040c8c683
+        DELETE /v2/service_instances/abb0736d-8941-47f0-aca9-fc449c0d067d?accepts_incomplete=true&plan_id=23332639-fbc1-49e7-ab24-52b586860fef&service_id=00fc4084-4ea1-40b2-8db7-55d040c8c683
 
 #### request body payload for createinstance:
 
@@ -35,7 +61,6 @@ cf create-service-broker test-broker test test123 https://brokerservice.130.147.
               "instance_name": "test-postgres"
              }
         }
-
 
 ## InitBroker function
 
