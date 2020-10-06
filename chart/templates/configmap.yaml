@@ -4,8 +4,8 @@ metadata:
   name: pg-broker-config
   labels:
     {{- include "charts.labels" . | nindent 4 }}
-data: |
-  config.yml:
+data: 
+  config.yaml: |
     services:
     - name: hsdp-rds
       id: 00fc4084-4ea1-40b2-8db7-55d040c8c683

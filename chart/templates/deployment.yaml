@@ -27,6 +27,12 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: BROKER_CONFIG_PATH
+            value: /run/secrets/config/config.yaml
+          volumeMounts:
+          - name: config
+            mountPath: /run/secrets/config
           ports:
             - name: http
               containerPort: {{ .Values.container.port }}
@@ -41,6 +47,10 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: config
+        configMap:
+          name: pg-broker-config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"text/template"
 
 	"github.com/ghodss/yaml"
@@ -66,7 +67,15 @@ func CreateController() (*Controller, error) {
 func InitBroker() (*model.Catalog, error) {
 
 	log.Println("init: load broker config file")
-	data, err := ioutil.ReadFile("config.yml")
+	//data, err := ioutil.ReadFile("config.yml")
+	brokerYamlConfigPath := os.Getenv("BROKER_CONFIG_PATH")
+	if brokerYamlConfigPath == "" {
+		panic("BROKER_CONFIG_PATH not set")
+	}
+
+	//data, err := ioutil.ReadFile("config.yml")
+	data, err := ioutil.ReadFile(brokerConfigPath)
+
 	if err != nil {
 		log.Fatalln(err)
 	}
