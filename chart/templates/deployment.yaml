@@ -30,6 +30,8 @@ spec:
           env:
           - name: BROKER_CONFIG_PATH
             value: /run/secrets/config/config.yaml
+          - name: BROKER_TARGET_NAMESPACE
+            value: {{ .Values.brokertargetnamespace }}
           volumeMounts:
           - name: config
             mountPath: /run/secrets/config

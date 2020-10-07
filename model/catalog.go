@@ -1,6 +1,6 @@
 package model
 
-//Catalog ...
+//Catalog ...type for unmarshal config.yaml with this broker
 type Catalog struct {
 	BasicAuthPass string `json:"basic_auth_pass"`
 	BasicAuthUser string `json:"basic_auth_user"`
@@ -40,4 +40,20 @@ type Catalog struct {
 		Tags     []string `json:"tags"`
 		Requires []string `json:"requires"`
 	} `json:"services"`
+}
+
+//PlanSetting ...
+type PlanSetting struct {
+	CPULimit      string `json:"cpu_limit"`
+	CPURequest    string `json:"cpu_request"`
+	ID            string `json:"id"`
+	ImageName     string `json:"image_name"`
+	MemoryLimit   string `json:"memory_limit"`
+	MemoryRequest string `json:"memory_request"`
+	Storage       string `json:"storage"`
+}
+
+//Plans ...
+type Plans struct {
+	PlanSettings []PlanSetting `json:"plan_settings"`
 }

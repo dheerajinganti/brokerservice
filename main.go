@@ -1,33 +1,19 @@
 package main
 
 import (
-	//"bytes"
-	//"context"
-	//"encoding/json"
 	"fmt"
-
-	//"html/template"
-	//"io/ioutil"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
-	//"gopkg.in/yaml.v2"
-	//"github.com/smallfish/simpleyaml"
-	//"github.com/ghodss/yaml"
-	"github.com/gorilla/mux"
-	//metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	//"k8s.io/client-go/kubernetes"
 
 	"github.com/dheerajinganti/brokerservice/controller"
-	//"github.com/dheerajinganti/brokerservice/kubeclient"
 	"github.com/dheerajinganti/brokerservice/model"
-	//appsv1 "k8s.io/api/apps/v1"
-	//apiv1 "k8s.io/api/core/v1"
 )
 
 func homePage(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "welcome to my web api with mux router implementation")
-	fmt.Println("this is a homepage!")
+	//fmt.Println("this is a homepage!")
 }
 
 //Server ...
@@ -58,7 +44,9 @@ func main() {
 	appRouter := mux.NewRouter().StrictSlash(true)
 	appRouter.HandleFunc("/", homePage)
 	appRouter.HandleFunc("/v2/catalog", s.controller.Catalog).Methods("GET")
+	appRouter.HandleFunc("/v2/service_instances/{service_instance_guid}", s.controller.GetServiceInstance).Methods("GET")
 	appRouter.HandleFunc("/v2/service_instances/{instance_guid}", s.controller.CreateServiceInstance).Methods("PUT")
+	appRouter.HandleFunc("/v2/service_instances/{instance_id}/last_operation", s.controller.LastOperation).Methods("GET")
 	appRouter.HandleFunc("/v2/service_instances/{instance_guid}", s.controller.RemoveServiceInstance).Methods("DELETE")
 	appRouter.HandleFunc("/v2/service_instances/{instance_guid}/service_bindings/{service_binding_guid}", s.controller.Bind).Methods("PUT")
 	appRouter.HandleFunc("/v2/service_instances/{instance_guid}/service_bindings/{service_binding_guid}", s.controller.UnBind).Methods("DELETE")

@@ -31,7 +31,7 @@
 
 #### create imagepull secret for kubernetes deployment
 
-        kubectl create secret docker-registry afpullsecret -n pg-test --docker-server=https://hsop-local-docker.artifactory.pic.philips.com --docker-username=ing08763 --docker-email=admin@philips.com --docker-password=""
+        kubectl create secret docker-registry afpullsecret -n hsop-pg --docker-server=https://hsop-local-docker.artifactory.pic.philips.com --docker-username=ing08763 --docker-email=admin@philips.com --docker-password=""
 
 #### helm charts for golang application
         helm create charts

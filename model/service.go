@@ -14,3 +14,12 @@ type Service struct {
 	Plans           []ServicePlan `json:"plans"`
 	DashboardClient interface{}   `json:"dashboard_client"`
 }
+
+//ServicePlan ...
+type ServicePlan struct {
+	Name        string      `json:"name"`
+	ID          string      `json:"id"`
+	Description string      `json:"description"`
+	Metadata    interface{} `json:"metadata, omitempty"`
+	Free        bool        `json:"free, omitempty"`
+}

@@ -11,5 +11,9 @@ spec:
       targetPort: 8888
       protocol: TCP
       name: http
+    - port: {{ .Values.service.httpsport }}
+      targetPort: 8888
+      protocol: TCP
+      name: https
   selector:
     {{- include "charts.selectorLabels" . | nindent 4 }}

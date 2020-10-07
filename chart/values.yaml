@@ -13,6 +13,7 @@ imagePullSecrets:
 nameOverride: ""
 fullnameOverride: ""
 
+brokertargetnamespace: hsop-pg
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -34,6 +35,7 @@ securityContext: {}
 service:
   type: ClusterIP
   port: 80
+  httpsport: 443
 
 container:
   port: 8888

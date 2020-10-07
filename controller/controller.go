@@ -24,6 +24,10 @@ import (
 	appsv1 "k8s.io/api/apps/v1"
 )
 
+const (
+	DEFAULT_POLLING_INTERVAL_SECONDS = 10
+)
+
 //Controller ...
 type Controller struct {
 	K8sClient kubernetes.Interface
@@ -74,7 +78,7 @@ func InitBroker() (*model.Catalog, error) {
 	}
 
 	//data, err := ioutil.ReadFile("config.yml")
-	data, err := ioutil.ReadFile(brokerConfigPath)
+	data, err := ioutil.ReadFile(brokerYamlConfigPath)
 
 	if err != nil {
 		log.Fatalln(err)
@@ -110,14 +114,14 @@ func (c *Controller) Catalog(w http.ResponseWriter, r *http.Request) {
 	}
 	d2 := ("{\"services\":") + string(d1) + "}"
 
-	var svc model.SvcCatalog
-	err = json.Unmarshal([]byte(d2), &svc)
+	var catResponse model.CatalogResponse
+	err = json.Unmarshal([]byte(d2), &catResponse)
 	if err != nil {
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	WriteResponse(w, http.StatusOK, svc)
+	WriteResponse(w, http.StatusOK, catResponse)
 }
 
 //WriteResponse ...
@@ -198,6 +202,10 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 		"vmware-str",
 	}
 
+	targetNamespace := os.Getenv("BROKER_TARGET_NAMESPACE")
+	if targetNamespace == "" {
+		panic("BROKER_TARGET_NAMESPACE not available")
+	}
 	//pg config creation
 	tmpl := template.Must(template.ParseFiles("./templates/postgres-configmap.yaml"))
 	out := new(bytes.Buffer)
@@ -207,7 +215,7 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 	}
 	var pgConfig apiv1.ConfigMap
 	err = yaml.Unmarshal([]byte(out.String()), &pgConfig)
-	result, err := c.K8sClient.CoreV1().ConfigMaps("default").Create(context.TODO(), &pgConfig, metav1.CreateOptions{})
+	result, err := c.K8sClient.CoreV1().ConfigMaps(targetNamespace).Create(context.TODO(), &pgConfig, metav1.CreateOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -222,7 +230,7 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 	}
 	var pgInitConfig apiv1.ConfigMap
 	err = yaml.Unmarshal([]byte(out.String()), &pgInitConfig)
-	result, err = c.K8sClient.CoreV1().ConfigMaps("default").Create(context.TODO(), &pgInitConfig, metav1.CreateOptions{})
+	result, err = c.K8sClient.CoreV1().ConfigMaps(targetNamespace).Create(context.TODO(), &pgInitConfig, metav1.CreateOptions{})
 	if err != nil {
 		panic(err)
 	}
@@ -237,7 +245,7 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 	}
 	var pgStatefulSet appsv1.StatefulSet
 	err = yaml.Unmarshal([]byte(out.String()), &pgStatefulSet)
-	result1, err1 := c.K8sClient.AppsV1().StatefulSets("default").Create(context.TODO(), &pgStatefulSet, metav1.CreateOptions{})
+	result1, err1 := c.K8sClient.AppsV1().StatefulSets(targetNamespace).Create(context.TODO(), &pgStatefulSet, metav1.CreateOptions{})
 	if err1 != nil {
 		panic(err1)
 	}
@@ -252,7 +260,7 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 	}
 	var svcConfig apiv1.Service
 	err = yaml.Unmarshal([]byte(out.String()), &svcConfig)
-	svcresult, err2 := c.K8sClient.CoreV1().Services("default").Create(context.TODO(), &svcConfig, metav1.CreateOptions{})
+	svcresult, err2 := c.K8sClient.CoreV1().Services(targetNamespace).Create(context.TODO(), &svcConfig, metav1.CreateOptions{})
 	if err2 != nil {
 		panic(err2)
 	}
@@ -265,23 +273,39 @@ func (c *Controller) CreateServiceInstance(w http.ResponseWriter, r *http.Reques
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(out.String())
-
+	//fmt.Println(out.String())
 	var secretConfig apiv1.Secret
 	err = yaml.Unmarshal([]byte(out.String()), &secretConfig)
-	secresult, err3 := c.K8sClient.CoreV1().Secrets("default").Create(context.TODO(), &secretConfig, metav1.CreateOptions{})
+	secresult, err3 := c.K8sClient.CoreV1().Secrets(targetNamespace).Create(context.TODO(), &secretConfig, metav1.CreateOptions{})
 	if err3 != nil {
 		panic(err3)
 	}
-	log.Printf("Created Service %q.\n", secresult.GetObjectMeta().GetName())
+	log.Printf("Created secret %q.\n", secresult.GetObjectMeta().GetName())
 
-	WriteResponse(w, http.StatusOK, "CreateServiceInstance is in works")
+	w.Header().Set("Content-Type", "application/json")
 
+	// LastOperation := &model.LastOperationStatus{
+	// 	State:                    "in progress",
+	// 	Description:              "creating service instance...",
+	// 	AsyncPollIntervalSeconds: DEFAULT_POLLING_INTERVAL_SECONDS,
+	// }
+
+	// response := model.CreateServiceInstanceResponse{
+	// 	DashboardUrl:  "Not_Available",
+	// 	LastOperation: LastOperation,
+	// }
+	response := model.ProvisioningResponse{
+		DashboardURL:  "Not_Available",
+		OperationData: "create",
+	}
+
+	WriteResponse(w, http.StatusAccepted, response)
 }
 
-//GetServiceInstance ...
-func (c *Controller) GetServiceInstance(w http.ResponseWriter, r *http.Request) {
-	log.Println("Get Service Instance State....")
+//LastOperation ...
+func (c *Controller) LastOperation(w http.ResponseWriter, r *http.Request) {
+	log.Println("Inside LastOperation....")
+
 	instance_id := mux.Vars(r)["instance_guid"]
 	log.Println("Instance_id is: " + instance_id)
 	log.Println("read request body")
@@ -290,7 +314,37 @@ func (c *Controller) GetServiceInstance(w http.ResponseWriter, r *http.Request) 
 		fmt.Println(err)
 	}
 	log.Println("received body: " + string(body))
-	WriteResponse(w, http.StatusOK, "GetServiceInstance is in works")
+
+	LastOperation := &model.LastOperationStatus{
+		State:       "succeeded",
+		Description: "successfully created service instance " + instance_id,
+	}
+	log.Println("sending response...")
+	WriteResponse(w, http.StatusOK, LastOperation)
+}
+
+//GetServiceInstance ...
+func (c *Controller) GetServiceInstance(w http.ResponseWriter, r *http.Request) {
+	log.Println("Get Service Instance State....")
+
+	instance_id := mux.Vars(r)["instance_guid"]
+	log.Println("Instance_id is: " + instance_id)
+	log.Println("read request body")
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+	log.Println("received body: " + string(body))
+
+	LastOperation := &model.LastOperationStatus{
+		State:       "succeeded",
+		Description: "successfully created service instance " + instance_id,
+	}
+	// response := model.CreateServiceInstanceResponse{
+	// 	DashboardUrl:  "Not_Available",
+	// 	LastOperation: LastOperation,
+	// }
+	WriteResponse(w, http.StatusOK, LastOperation)
 }
 
 //RemoveServiceInstance ...
