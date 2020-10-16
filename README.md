@@ -1,3 +1,12 @@
+# All about go
+#### setup environemnt 
+
+    export GOPATH="${HOME}/go"
+    export GOROOT="/usr/local/go"
+    export GOBIN="$GOPATH/bin"
+
+
+
 ### Manage go module dependency
 
         go mod init github.com/dheerajinganti/brokerservice
