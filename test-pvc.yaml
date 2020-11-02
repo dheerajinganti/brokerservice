@@ -1,0 +1,25 @@
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: abcd-123456
+  namespace: eirini
+  selfLink: >-
+    /api/v1/namespaces/eirini/persistentvolumeclaims/a6d85436-4296-42ac-a0d5-64b2f062049c
+  labels:
+    organization-id: 8c52f274-227d-4a53-a84f-15798b58ec2e
+    plan-id: default
+    service-id: eirini-persi
+    space-id: 644d2756-56af-489f-9a72-41bb8dfd04bd
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: csi.vsphere.vmware.com
+  finalizers:
+    - kubernetes.io/pvc-protection
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: vmware-str
+  volumeMode: Filesystem
+

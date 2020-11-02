@@ -5,8 +5,6 @@
     export GOROOT="/usr/local/go"
     export GOBIN="$GOPATH/bin"
 
-
-
 ### Manage go module dependency
 
         go mod init github.com/dheerajinganti/brokerservice
@@ -15,7 +13,7 @@
         list dependencies
         go list -m all
         
-### push golang app to cloud foundry
+### Push golang app to cloud foundry
 #### manifest.yaml
 ---
         applications:
@@ -23,7 +21,7 @@
         env:
             GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
 
-### create cf service broker 
+#### create cf service broker 
         cf create-service-broker test-broker test test123 https://brokerservice.130.147.139.72.nip.io
 
 #### enable service access
@@ -37,7 +35,8 @@
         docker run -d --name pg-broker --restart=always --publish 8888:8888 hsop-local-docker.artifactory.pic.philips.com/pg-broker:0.2
 #### push docker image to registry
         docker image push hsop-local-docker.artifactory.pic.philips.com/pg-broker:0.2 
-
+#### save image as tar.gz
+        docker save hsop-local-docker.artifactory.pic.philips.com/pg-broker:0.13 |gzip > pgbroker.tar.gz
 #### create imagepull secret for kubernetes deployment
 
         kubectl create secret docker-registry afpullsecret -n hsop-pg --docker-server=https://hsop-local-docker.artifactory.pic.philips.com --docker-username=ing08763 --docker-email=admin@philips.com --docker-password=""
@@ -47,7 +46,6 @@
 
 #### helm dry run before deployment
         helm install pg-broker --dry-run --debug ./charts
-
 
 #### http requests from Cloud Foundry as per OSBI specification
 

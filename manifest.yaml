@@ -2,4 +2,5 @@
 applications:
 - name: test-brokerservice
 env:
-    GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
+  GOVERSION: go1.15
+  GO_INSTALL_PACKAGE_SPEC: github.com/dheerajinganti/brokerservice
