@@ -1,4 +1,5 @@
-# All about go
+# All about go 
+##### A sample service broker implementation
 #### setup environemnt 
 
     export GOPATH="${HOME}/go"
