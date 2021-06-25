@@ -60,6 +60,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, appRouter))
 }
 
+//create a server
 func createserver() (*Server, error) {
 
 	controller, err := controller.CreateController()
