@@ -13,7 +13,12 @@
 
         list dependencies
         go list -m all
+### vendoring dependecies
+        go mod vendor
+#### compile go app for linux target    
         
+        env GOOS=linux GOARCH=amd64 go build -o ./consumer-linux
+
 ### Push golang app to cloud foundry
 #### manifest.yaml
 ---

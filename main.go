@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/gorilla/mux"
 
 	"github.com/dheerajinganti/brokerservice/controller"
 	"github.com/dheerajinganti/brokerservice/model"
@@ -63,7 +65,7 @@ func createserver() (*Server, error) {
 	controller, err := controller.CreateController()
 	if err != nil {
 		log.Printf("err: %v\n", err)
-		return nil, err
+		return nil, errors.New("error")
 	}
 	return &Server{
 		controller: controller,
