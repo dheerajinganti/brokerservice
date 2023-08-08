@@ -18,7 +18,7 @@ func homePage(w http.ResponseWriter, r *http.Request) {
 	//fmt.Println("this is a homepage!")
 }
 
-//Server ...
+// Server struct...
 type Server struct {
 	controller *controller.Controller
 }
@@ -60,7 +60,7 @@ func main() {
 	log.Fatal(http.ListenAndServe(":"+port, appRouter))
 }
 
-//create a server
+// create a server
 func createserver() (*Server, error) {
 
 	controller, err := controller.CreateController()
